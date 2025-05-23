@@ -35,7 +35,7 @@ void mouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
 
 bool isImguiHovered(const vec2& mouse);
 
-void produceBig(const Shader& drawShader, const Shader& compShader, const MiniMesh& borders, int w, int h);
+void produce(const Shader& drawShader, const Shader& compShader, const MiniMesh& borders, int w, int h);
 
 int main() {
   // Assuming the executable is launching from its own directory
@@ -169,11 +169,11 @@ int main() {
     ImGui::Begin("Settings");
 
     if (ImGui::Button("Save to borders.png (2560x1280)  ")) {
-      produceBig(framebufferShader_w2, mainComputeShader, borders, 2560, 1280);
+      produce(framebufferShader_w2, mainComputeShader, borders, 2560, 1280);
     }
 
     if (ImGui::Button("Save to borders.png (21600x10800)")) {
-      produceBig(framebufferShader_w2, mainComputeShader, borders, 21600, 10800);
+      produce(framebufferShader_w2, mainComputeShader, borders, 21600, 10800);
     }
 
     if (ImGui::Button("Reset View")) {
@@ -253,7 +253,7 @@ bool isImguiHovered(const vec2& mouse) {
   return io.WantCaptureMouse || io.WantCaptureKeyboard;
 }
 
-void produceBig(const Shader& drawShader, const Shader& compShader, const MiniMesh& borders, int w, int h) {
+void produce(const Shader& drawShader, const Shader& compShader, const MiniMesh& borders, int w, int h) {
   int w2 = w / 2;
   int channels = 1;
 
@@ -289,7 +289,7 @@ void produceBig(const Shader& drawShader, const Shader& compShader, const MiniMe
   glBindImageTexture(texOutputUnit, texOutput, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R8);
 
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-  glViewport(0, 0, w, h);
+  glViewport(0, 0, w2, h);
 
   byte* pixels = new byte[w2 * h * channels];
   stbi_flip_vertically_on_write(true);
