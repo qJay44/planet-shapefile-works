@@ -1,3 +1,4 @@
 Build/
 .cache/
 src/*.png
+src/res/*

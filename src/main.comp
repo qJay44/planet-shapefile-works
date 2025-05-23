@@ -5,10 +5,28 @@ layout(r8, binding = 0) writeonly uniform image2D image;
 
 layout(binding = 1) uniform sampler2D fbTexture;
 
+layout(location = 0) uniform vec2 stepUV;
+
+float getTexValue(vec2 uv) {
+  return texture(fbTexture, uv).r;
+}
+
 void main() {
   ivec2 texCoord = ivec2(gl_GlobalInvocationID.xy);
   vec2 uv = vec2(texCoord) / vec2(gl_NumWorkGroups.xy);
 
-  imageStore(image, texCoord, vec4(vec3(texture(fbTexture, uv).r), 1.f));
+  float tl      = getTexValue(uv + vec2(-stepUV.x, stepUV.y));
+  float top     = getTexValue(uv + vec2(0.f, stepUV.y));
+  float tr      = getTexValue(uv + vec2(stepUV.x, stepUV.y));
+  float ml      = getTexValue(uv + vec2(-stepUV.x, 0.f));
+  float middle  = getTexValue(uv);
+  float mr      = getTexValue(uv + vec2(stepUV.x, 0.f));
+  float bl      = getTexValue(uv + vec2(-stepUV.x, -stepUV.y));
+  float bottom  = getTexValue(uv + vec2(0.f, -stepUV.y));
+  float br      = getTexValue(uv + vec2(stepUV.x, -stepUV.y));
+
+  vec3 color = vec3(tl+top+tr+ml+middle+mr+bl+bottom+br);
+
+  imageStore(image, texCoord, vec4(color, 1.f));
 }
 

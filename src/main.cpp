@@ -83,6 +83,7 @@ int main() {
   Shader framebufferShader_w2("framebuffer_w2.vert", "framebuffer.frag");
   Shader mainComputeShader("main.comp");
   mainShader.setUniformTexture(2, 0);
+  mainShader.setUniform2f(3, 1.f / vec2{OUTPUT_WIDTH, OUTPUT_HEIGHT});
 
   // ----- Screen triangles ----------------------------------- //
 
@@ -302,7 +303,7 @@ void produceBig(const Shader& drawShader, const Shader& compShader, const MiniMe
     std::string fileName = std::format("borders{}_{}.png", w, i);
 
     printf("Creating %s (%dx%d)...\n", fileName.c_str(), w2, h);
-    compShader.use();
+    compShader.setUniform2f(0, 1.f / vec2{w2, h});
     glDispatchCompute(w2, h, 1);
     glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
     glActiveTexture(GL_TEXTURE0);
