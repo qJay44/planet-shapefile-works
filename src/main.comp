@@ -1,0 +1,14 @@
+#version 460 core
+
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(r8, binding = 0) writeonly uniform image2D image;
+
+layout(binding = 1) uniform sampler2D fbTexture;
+
+void main() {
+  ivec2 texCoord = ivec2(gl_GlobalInvocationID.xy);
+  vec2 uv = vec2(texCoord) / vec2(gl_NumWorkGroups.xy);
+
+  imageStore(image, texCoord, vec4(vec3(texture(fbTexture, uv).r), 1.f));
+}
+
